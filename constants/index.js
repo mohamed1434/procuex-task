@@ -1,4 +1,4 @@
-export const COOKIE_NAME = "OurSiteJWT";
+export const COOKIE_NAME = "auth-cookie";
 
 export const sideNavItems = [
   {

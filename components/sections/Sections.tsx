@@ -1,12 +1,49 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import SubSection from "./SubSection";
 import { specifications } from "@/constants";
+import { useTemplate } from "@/context/TemplateContext";
 
 const Sections = ({ data, sectionNumber }: SectionPr) => {
   const [isActive, setIsActive] = useState(false);
+  const { setTemplateData, templateData, deleteSection } = useTemplate();
 
   const handleToggleActive = () => {
     setIsActive(!isActive);
+  };
+
+  const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newName = event.target.value;
+
+    // Create a copy of the data from the context
+    const updatedData = { ...templateData };
+
+    // Find the section by its key and update its name
+    const sectionToUpdate = updatedData.data.sections.find(
+      (section: ITEM) => section.key === data.key
+    );
+
+    if (sectionToUpdate) {
+      sectionToUpdate.name = newName;
+
+      // Update the context with the updated data
+      setTemplateData(updatedData);
+    }
+  };
+
+  const handleDescriptionChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    const newDesc = event.target.value;
+
+    const updatedData = { ...templateData };
+
+    const sectionToUpdate = updatedData.data.sections.find(
+      (section: ITEM) => section.key === data.key
+    );
+
+    if (sectionToUpdate) {
+      sectionToUpdate.description = newDesc;
+
+      setTemplateData(updatedData);
+    }
   };
 
   const sectionCounters: { [sectionKey: string]: number } = {};
@@ -35,6 +72,14 @@ const Sections = ({ data, sectionNumber }: SectionPr) => {
             >
               {`>`}
             </div>
+
+            <img
+              src="../images/trash.svg"
+              alt="Delete"
+              className="object-cover w-5 h-5 cursor-pointer ml-2"
+              onClick={() => deleteSection(data.id, data.key)}
+            />
+
           </div>
 
           <div className="w-full p-4">
@@ -45,8 +90,9 @@ const Sections = ({ data, sectionNumber }: SectionPr) => {
                 className="block py-2 px-2 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-[#E8EAED] appearance-none dark:text-black dark:border-[#E8EAED] dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
                 required
-                name="email"
-                value={data.name}
+                name="name"
+                value={data.name} //use the state from contextAPI
+                onChange={handleNameChange} //upadte the Name
               />
               <label
                 htmlFor="floating_outlined"
@@ -70,8 +116,9 @@ const Sections = ({ data, sectionNumber }: SectionPr) => {
                 className="block py-2 px-2 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-[#E8EAED] appearance-none dark:text-black dark:border-[#E8EAED] dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
                 required
-                name="email"
+                name="description"
                 value={data.description}
+                onChange={handleDescriptionChange}
               />
               <label
                 htmlFor="floating_outlined"
@@ -83,7 +130,7 @@ const Sections = ({ data, sectionNumber }: SectionPr) => {
 
             <div className="w-full pl-16">
               <h1 className="text-[12px] py-6">Sub Section</h1>
-              {specifications.data.subSections.map((subSection, index) => {
+              {templateData.data.subSections.map((subSection, index: number) => {
                 if (sectionCounters[subSection.parentKey] === undefined) {
                   // Initialize the counter for this section if it doesn't exist
                   sectionCounters[subSection.parentKey] = 1;

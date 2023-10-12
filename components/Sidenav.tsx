@@ -1,3 +1,4 @@
+"use client"
 import { sideNavItems } from "@/constants";
 import { useSidenav } from "@/context/SideNavContext";
 import { useState } from "react";
@@ -5,13 +6,10 @@ import Link from "next/link";
 
 const Sidenav = () => {
   const { selectedItem, selectItem, isSidebarHidden } = useSidenav();
-  console.log(isSidebarHidden)
   return (
     <>
     <aside className={` ${isSidebarHidden ? "" : "fixed h-full top-0 left-0 z-50 md:sticky"}  `}>
 
-
-      {/**h-screen */}
       <div className={`sticky left-0 top-0 z-50 flex h-screen w-full flex-col
        overflow-auto dark:border-gray-300 border-r-[1px]
         bg-[#F7FCFF] ${isSidebarHidden ? "max-md:hidden" : "block z-50"} `}>

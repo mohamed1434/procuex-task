@@ -1,12 +1,46 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import Objects from "./Objects";
 import { specifications } from "@/constants";
+import { useTemplate } from "@/context/TemplateContext";
 
 const SubSection = ({ data, subSectionNumber }: SubSectionPr) => {
   const [isActive, setIsActive] = useState(false);
+  const { setTemplateData, templateData, deleteSubSection } = useTemplate();
 
   const handleToggleActive = () => {
     setIsActive(!isActive);
+  };
+
+  const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newName = event.target.value;
+
+    const updatedData = { ...templateData };
+
+    const subSectionToUpdate = updatedData.data.subSections.find(
+      (subSection: ITEM) => subSection.key === data.key
+    );
+
+    if (subSectionToUpdate) {
+      subSectionToUpdate.name = newName;
+
+      setTemplateData(updatedData);
+    }
+  };
+
+  const handleDescriptionChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    const newDesc = event.target.value;
+
+    const updatedData = { ...templateData };
+
+    const subSectionToUpdate = updatedData.data.subSections.find(
+      (subSection: ITEM) => subSection.key === data.key
+    );
+
+    if (subSectionToUpdate) {
+      subSectionToUpdate.description = newDesc;
+
+      setTemplateData(updatedData);
+    }
   };
 
   const objectsCounters: { [subSectionKey: string]: number } = {};
@@ -33,6 +67,14 @@ const SubSection = ({ data, subSectionNumber }: SubSectionPr) => {
           >
             {`>`}
           </div>
+
+          <img
+              src="../images/trash.svg"
+              alt="Delete"
+              className="object-cover w-5 h-5 cursor-pointer ml-2"
+              onClick={() => deleteSubSection(data.id, data.key)}
+            />
+
         </div>
 
         <div className="w-full p-4">
@@ -43,8 +85,9 @@ const SubSection = ({ data, subSectionNumber }: SubSectionPr) => {
               className="block py-2 px-2 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-[#E8EAED] appearance-none dark:text-black dark:border-[#E8EAED] dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
               required
-              name="email"
+              name="name"
               value={data.name}
+              onChange={handleNameChange}
             />
             <label
               htmlFor="floating_outlined"
@@ -68,8 +111,9 @@ const SubSection = ({ data, subSectionNumber }: SubSectionPr) => {
               className="block py-2 px-2 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-[#E8EAED] appearance-none dark:text-black dark:border-[#E8EAED] dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
               required
-              name="email"
+              name="description"
               value={data.description}
+              onChange={handleDescriptionChange}
             />
             <label
               htmlFor="floating_outlined"
@@ -82,7 +126,7 @@ const SubSection = ({ data, subSectionNumber }: SubSectionPr) => {
           <div className="w-full pl-6">
             <h1 className="text-[12px] py-6">Objects</h1>
 
-            {specifications.data.objects.map((object, index) => {
+            {templateData.data.objects.map((object, index: number) => {
               if (objectsCounters[object.parentKey] === undefined) {
                 // Initialize the counter for this section if it doesn't exist
                 objectsCounters[object.parentKey] = 1;

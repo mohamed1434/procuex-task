@@ -18,6 +18,15 @@ interface SectionPr {
   sectionNumber: number;
 }
 
+interface ITEM {
+  id: string;
+  rfqId: string;
+  key: string;
+  parentKey: string | null;
+  name: string;
+  description: string;
+}
+
 interface SubSectionPr {
   data: {
     id: string;

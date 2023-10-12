@@ -1,9 +1,9 @@
-"use client"
+"use client";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const LoginForm = () => {
-
   const { push } = useRouter();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -17,19 +17,21 @@ const LoginForm = () => {
     try {
       const { data } = await axios.post("/api/auth/login", payload);
 
-      alert(JSON.stringify(data));
+      toast.success("Logged In");
 
-      // redirect the user to /dashboard
       push("/");
     } catch (e) {
       const error = e as AxiosError;
 
-      alert(error.message);
+      toast.error("Email or Password Incorrect");
     }
   };
   return (
     <>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full py-8 px-8  sm:px-24">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4 w-full py-8 px-8  sm:px-24"
+      >
         <img src="../images/logo.svg" className="object-cover w-56" />
         <h1 className="text-[28px] font-semibold">Company Login</h1>
         <div className="relative">
